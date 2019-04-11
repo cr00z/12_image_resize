@@ -2,11 +2,13 @@
 
 Image Resizer is a simple console script for resize JPG and PNG images.
 
-You may increase or decrease resolution of result image by:
+You may increase or decrease resolution of resulted image by:
 
-* new width OR height - image aspect ratio is remains the same;
-* new width AND height - image aspect ratio is not remains the same;
-* new scale (less than 1 for zoom out, more than 1 for zoom in).
+* new *--width* OR *--height* (image aspect ratio is remains the same);
+* new *--width* AND *--height* (image aspect ratio is not remains the same);
+* new *--scale* (less than 1 for zoom out, more than 1 for zoom in).
+
+You may use *--output* to set a new path for resulted image.
 
 # How to Install
 
