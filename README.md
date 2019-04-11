@@ -4,7 +4,8 @@ Image Resizer is a simple console script for resize JPG and PNG images.
 
 You may increase or decrease resolution of result image by:
 
-* new width and/or height;
+* new width OR height - image aspect ratio is remains the same;
+* new width AND height - image aspect ratio is not remains the same;
 * new scale (less than 1 for zoom out, more than 1 for zoom in).
 
 # How to Install
@@ -20,6 +21,8 @@ pip install -r requirements.txt # alternatively try pip3
 Remember, it is recommended to use [virtualenv/venv](https://devman.org/encyclopedia/pip/pip_virtualenv/) for better isolation.
 
 # Quickstart
+
+Example of script launch on Linux, Python 3.5:
 
 ```bash
 
