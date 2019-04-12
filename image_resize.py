@@ -60,18 +60,20 @@ if __name__ == '__main__':
         exit('File is not image')
     if args.scale is None and args.width is None and args.height is None:
         exit("Set 'scale' or 'width'/'height' parameters")
+
     orig_width, orig_height = orig_image.size
     if args.scale and args.width is None and args.height is None:
-        new_width, new_height = map(lambda x: int(x*args.scale), orig_image.size)
+        scale_x, scale_y = args.scale, args.scale
     elif args.scale is None and (args.width or args.height):
         scale_x = args.width / orig_width if args.width else args.height / orig_height
-        scale_y = args.height / orig_height if args.height else args.width / orig_width
-        if scale_x != scale_y:
-            print('Image aspect ratio is not remains the same!')
-        new_width = args.width if args.width else int(orig_width * scale_x)
-        new_height = args.height if args.height else int(orig_height * scale_y)
+        scale_y = args.height / orig_height if args.height else scale_x
     else:
         exit("'Scale' and 'width'/'height' parameters cannot be used together")
+    if scale_x != scale_y:
+        print('Image aspect ratio is not remains the same!')
+    new_width = int(orig_width * scale_x)
+    new_height = int(orig_height * scale_y)
+
     resolution_str = '{}x{}'.format(new_width, new_height)
     result_path = set_result_path(args.input_path, args.output, resolution_str)
     if result_path is None:
