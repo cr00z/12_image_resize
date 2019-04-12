@@ -51,6 +51,17 @@ def set_result_path(path_to_original, path_to_result, resolution_str):
     return result_path
 
 
+def get_scales(new_scale, orig_width, orig_height, new_width, new_height):
+    if new_scale and not new_width and not new_height:
+        scale_x, scale_y = new_scale, new_scale
+    elif not new_scale and (new_width or new_height):
+        scale_x = new_width / orig_width if new_width else new_height / orig_height
+        scale_y = new_height / orig_height if new_height else scale_x
+    else:
+        scale_x, scale_y = None, None
+    return scale_x, scale_y
+
+
 if __name__ == '__main__':
     args = get_cmdline_args()
     if not os.path.exists(args.input_path):
@@ -62,12 +73,14 @@ if __name__ == '__main__':
         exit("Set 'scale' or 'width'/'height' parameters")
 
     orig_width, orig_height = orig_image.size
-    if args.scale and args.width is None and args.height is None:
-        scale_x, scale_y = args.scale, args.scale
-    elif args.scale is None and (args.width or args.height):
-        scale_x = args.width / orig_width if args.width else args.height / orig_height
-        scale_y = args.height / orig_height if args.height else scale_x
-    else:
+    scale_x, scale_y = get_scales(
+        args.scale,
+        orig_width,
+        orig_height,
+        args.width,
+        args.height
+    )
+    if scale_x is None:
         exit("'Scale' and 'width'/'height' parameters cannot be used together")
     if scale_x != scale_y:
         print('Image aspect ratio is not remains the same!')
