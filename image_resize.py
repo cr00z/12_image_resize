@@ -62,13 +62,15 @@ def get_scales(new_scale, orig_width, orig_height, new_width, new_height):
     return scale_x, scale_y
 
 
+def resize_image(path_to_original, path_to_result):
+    pass
+
+
 if __name__ == '__main__':
     args = get_cmdline_args()
     orig_image = load_image(args.input_path)
     if orig_image is None:
         exit('Image not found or file is not image')
-    if args.scale is None and args.width is None and args.height is None:
-        exit("Set 'scale' or 'width'/'height' parameters")
 
     orig_width, orig_height = orig_image.size
     scale_x, scale_y = get_scales(
@@ -79,7 +81,10 @@ if __name__ == '__main__':
         args.height
     )
     if scale_x is None:
-        exit("'Scale' and 'width'/'height' parameters cannot be used together")
+        exit(
+            "Set 'scale' or 'width'/'height' parameters. "
+            "'Scale' and 'width'/'height' parameters cannot be used together"
+        )
     if scale_x != scale_y:
         print('Image aspect ratio is not remains the same!')
     new_width = int(orig_width * scale_x)
