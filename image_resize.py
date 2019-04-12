@@ -73,11 +73,7 @@ if __name__ == '__main__':
         args.height
     )
     if scale_x is None:
-        exit(
-            "Set 'scale' or 'width'/'height' parameters. "
-            "'Scale' and 'width'/'height' parameters cannot be used together. "
-            "'Scale' and 'width'/'height' parameters must be greate whan zero"
-        )
+        exit('Scale or width/height parameters not set, used together or incorrect')
     if scale_x != scale_y:
         print('Image aspect ratio is not remains the same!')
     new_width = int(orig_width * scale_x)
