@@ -58,15 +58,11 @@ def get_scales(new_scale, orig_width, orig_height, new_width, new_height):
     return scale_x, scale_y
 
 
-def error_handler(checked_value, error_text):
-    if checked_value is None:
-        exit(error_text)
-
-
 if __name__ == '__main__':
     args = get_cmdline_args()
     orig_image = load_image(args.input_path)
-    error_handler(orig_image, 'Image not found or file is not image')
+    if orig_image is None:
+        exit('Image not found or file is not image')
 
     orig_width, orig_height = orig_image.size
     scale_x, scale_y = get_scales(
@@ -76,10 +72,8 @@ if __name__ == '__main__':
         args.width,
         args.height
     )
-    error_handler(
-        scale_x,
-        'Scale or width/height parameters not set, used together or incorrect'
-    )
+    if scale_x is None:
+        exit('Scale or width/height parameters not set, used together or incorrect')
     if scale_x != scale_y:
         print('Image aspect ratio is not remains the same!')
     new_width = int(orig_width * scale_x)
@@ -87,9 +81,7 @@ if __name__ == '__main__':
 
     resolution_str = '{}x{}'.format(new_width, new_height)
     result_path = set_result_path(args.input_path, args.output, resolution_str)
-    error_handler(result_path, 'Result directory not found')
+    if result_path is None:
+        exit('Result directory not found')
     resized_image = orig_image.resize((new_width, new_height))
-    try:
-        resized_image.save(result_path)
-    except (KeyError, ValueError):
-        exit('Unknown output file extension')
+    resized_image.save(result_path)
