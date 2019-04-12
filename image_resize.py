@@ -4,9 +4,6 @@ import os
 import re
 
 
-LAST_DOT_INDEX = 1
-
-
 def get_cmdline_args():
     parser = argparse.ArgumentParser(
         description='Simple console script for resize JPG and PNG images'
@@ -30,7 +27,7 @@ def get_cmdline_args():
 def load_image(path_to_image):
     try:
         image = Image.open(path_to_image)
-    except (OSError, IOError):
+    except OSError:
         image = None
     return image
 
@@ -38,15 +35,12 @@ def load_image(path_to_image):
 def set_result_path(path_to_original, path_to_result, resolution_str):
     if path_to_result is None:
         result_file = os.path.split(path_to_original)[1]
-        file_name, file_ext = result_file.rsplit('.', LAST_DOT_INDEX)
+        file_name, file_ext = os.path.splitext(result_file)
         result_path = '{}_{}.{}'.format(file_name, resolution_str, file_ext)
     else:
-        if re.fullmatch(r'.*\.(jpg|jpeg|png)$', path_to_result, re.IGNORECASE):
-            result_path = path_to_result
-            result_dir = os.path.split(result_path)[0]
-            if result_dir and not os.path.exists(result_dir):
-                result_path = None
-        else:
+        result_path = path_to_result
+        result_dir = os.path.split(result_path)[0]
+        if result_dir and not os.path.exists(result_dir):
             result_path = None
     return result_path
 
@@ -59,6 +53,8 @@ def get_scales(new_scale, orig_width, orig_height, new_width, new_height):
         scale_y = new_height / orig_height if new_height else scale_x
     else:
         scale_x, scale_y = None, None
+    if scale_x <= 0 or scale_y <= 0:
+        scale_x = None
     return scale_x, scale_y
 
 
@@ -79,7 +75,8 @@ if __name__ == '__main__':
     if scale_x is None:
         exit(
             "Set 'scale' or 'width'/'height' parameters. "
-            "'Scale' and 'width'/'height' parameters cannot be used together"
+            "'Scale' and 'width'/'height' parameters cannot be used together. "
+            "'Scale' and 'width'/'height' parameters must be greate whan zero"
         )
     if scale_x != scale_y:
         print('Image aspect ratio is not remains the same!')
@@ -89,6 +86,9 @@ if __name__ == '__main__':
     resolution_str = '{}x{}'.format(new_width, new_height)
     result_path = set_result_path(args.input_path, args.output, resolution_str)
     if result_path is None:
-        exit('Result directory not found OR result file must be jpg or png')
+        exit('Result directory not found')
     resized_image = orig_image.resize((new_width, new_height))
-    resized_image.save(result_path)
+    try:
+        resized_image.save(result_path)
+    except (KeyError, ValueError):
+        exit('Unknown output file extension')
