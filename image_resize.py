@@ -64,11 +64,9 @@ def get_scales(new_scale, orig_width, orig_height, new_width, new_height):
 
 if __name__ == '__main__':
     args = get_cmdline_args()
-    if not os.path.exists(args.input_path):
-        exit('Image not found')
     orig_image = load_image(args.input_path)
     if orig_image is None:
-        exit('File is not image')
+        exit('Image not found or file is not image')
     if args.scale is None and args.width is None and args.height is None:
         exit("Set 'scale' or 'width'/'height' parameters")
 
