@@ -62,10 +62,6 @@ def get_scales(new_scale, orig_width, orig_height, new_width, new_height):
     return scale_x, scale_y
 
 
-def resize_image(path_to_original, path_to_result):
-    pass
-
-
 if __name__ == '__main__':
     args = get_cmdline_args()
     orig_image = load_image(args.input_path)
