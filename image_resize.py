@@ -4,6 +4,9 @@ import os
 import re
 
 
+LAST_DOT_INDEX = 1
+
+
 def get_cmdline_args():
     parser = argparse.ArgumentParser(
         description='Simple console script for resize JPG and PNG images'
@@ -35,7 +38,7 @@ def load_image(path_to_image):
 def set_result_path(path_to_original, path_to_result, resolution_str):
     if path_to_result is None:
         result_file = os.path.split(path_to_original)[1]
-        file_name, file_ext = result_file.rsplit('.', 1)
+        file_name, file_ext = result_file.rsplit('.', LAST_DOT_INDEX)
         result_path = '{}_{}.{}'.format(file_name, resolution_str, file_ext)
     else:
         if re.fullmatch(r'.*\.(jpg|jpeg|png)$', path_to_result, re.IGNORECASE):
@@ -56,12 +59,10 @@ if __name__ == '__main__':
     if orig_image is None:
         exit('File is not image')
     if args.scale is None and args.width is None and args.height is None:
-        exit("Set 'scale' and 'width'/'height' parameter")
-
+        exit("Set 'scale' or 'width'/'height' parameters")
     orig_width, orig_height = orig_image.size
     if args.scale and args.width is None and args.height is None:
-        new_width = int(orig_width * args.scale)
-        new_height = int(orig_height * args.scale)
+        new_width, new_height = map(lambda x: int(x*args.scale), orig_image.size)
     elif args.scale is None and (args.width or args.height):
         scale_x = args.width / orig_width if args.width else args.height / orig_height
         scale_y = args.height / orig_height if args.height else args.width / orig_width
@@ -71,7 +72,6 @@ if __name__ == '__main__':
         new_height = args.height if args.height else int(orig_height * scale_y)
     else:
         exit("'Scale' and 'width'/'height' parameters cannot be used together")
-
     resolution_str = '{}x{}'.format(new_width, new_height)
     result_path = set_result_path(args.input_path, args.output, resolution_str)
     if result_path is None:
